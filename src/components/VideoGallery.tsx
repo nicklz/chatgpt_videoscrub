@@ -46,6 +46,13 @@ class VideoGallery extends React.Component<VideoGalleryProps, VideoGalleryState>
     }
   };
 
+  handleLoaded = (event: any) => {
+
+    console.log('done', event)
+  };
+
+
+
   render() {
     const { videos } = this.state;
     return (
@@ -53,7 +60,7 @@ class VideoGallery extends React.Component<VideoGalleryProps, VideoGalleryState>
         {
           videos.map((video, index) => (
             <div className="video-wrapper" key={index} onMouseMove={this.handleHover} >
-              <video controls preload="auto">
+              <video controls preload="auto" onLoadedMetadata={this.handleLoaded}>
                 <source src={video.src}></source>
               </video>
             </div>
