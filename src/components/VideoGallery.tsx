@@ -31,24 +31,18 @@ class VideoGallery extends React.Component<VideoGalleryProps, VideoGalleryState>
     this.setState({
       videos: data.videos.map((video: any) => ({ src: video.video_files[0].link })),
     });
-
-    console.log(this.state)
   }
-
 
   handleHover = (event: React.MouseEvent<HTMLDivElement>) => {
 
     const video = event.currentTarget.querySelector('video')
     const videoWrapper = event.currentTarget;
 
-    console.log('wrapper', video)
-
     if (video && videoWrapper) {
       const x = event.pageX - videoWrapper.offsetLeft;
       const width = videoWrapper.offsetWidth;
 
-      // @ts-ignore
-      video.currentTime = Math.round((x / width) * video.duration) / 10;
+      video.currentTime = Math.round((x / width) * video.duration);
     }
   };
 
