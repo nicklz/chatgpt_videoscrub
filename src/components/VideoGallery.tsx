@@ -47,8 +47,13 @@ class VideoGallery extends React.Component<VideoGalleryProps, VideoGalleryState>
   };
 
   handleLoaded = (event: any) => {
+    const video = event.currentTarget
 
-    console.log('done', event)
+    if (video.buffered.length === 0) return;
+
+    if (video.buffered.end(0) === video.duration) {
+      video.setAttribute('data-loaded', 'true')
+    }
   };
 
 
@@ -60,7 +65,7 @@ class VideoGallery extends React.Component<VideoGalleryProps, VideoGalleryState>
         {
           videos.map((video, index) => (
             <div className="video-wrapper" key={index} onMouseMove={this.handleHover} >
-              <video controls preload="auto" onLoadedMetadata={this.handleLoaded}>
+              <video data-loaded="false" preload="auto" onProgress={this.handleLoaded}>
                 <source src={video.src}></source>
               </video>
             </div>

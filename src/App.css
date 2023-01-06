@@ -50,3 +50,15 @@
 .video-wrapper {
   margin: 1em;
 }
+
+[data-loaded="false"] {
+  visibility: hidden;
+}
+
+[data-loaded="true"] {
+  visibility: inherit;
+}
+
+.vsc-controller {
+  display: none;
+}
