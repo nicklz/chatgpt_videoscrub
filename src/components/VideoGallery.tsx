@@ -5,37 +5,28 @@ interface VideoGalleryProps {
   perPage: number;
 }
 
-interface VideoGalleryState {
-  videos: Array<{ src: string }>;
-}
+const VideoGallery: React.FC<VideoGalleryProps> = ({ query, perPage }) => {
+  const [videos, setVideos] = React.useState<Array<{ src: string }>>([]);
 
-class VideoGallery extends React.Component<VideoGalleryProps, VideoGalleryState> {
-  constructor(props: VideoGalleryProps) {
-    super(props);
-    this.state = {
-      videos: [],
+  React.useEffect(() => {
+    const fetchVideos = async () => {
+      const response = await fetch(
+        `https://api.pexels.com/videos/search?query=${query}&per_page=${perPage}`,
+        {
+          headers: {
+            Authorization: '563492ad6f9170000100000190359ac9fe214f8aa02fb4d6dabde74d',
+          },
+        }
+      );
+      const data = await response.json();
+      setVideos(data.videos.map((video: any) => ({ src: video.video_files[0].link })));
     };
-  }
 
-  async componentDidMount() {
-    const { query, perPage } = this.props;
-    const response = await fetch(
-      `https://api.pexels.com/videos/search?query=${query}&per_page=${perPage}`,
-      {
-        headers: {
-          Authorization: '563492ad6f9170000100000190359ac9fe214f8aa02fb4d6dabde74d',
-        },
-      }
-    );
-    const data = await response.json();
-    this.setState({
-      videos: data.videos.map((video: any) => ({ src: video.video_files[0].link })),
-    });
-  }
+    fetchVideos();
+  }, [query, perPage]);
 
-  handleHover = (event: React.MouseEvent<HTMLDivElement>) => {
-
-    const video = event.currentTarget.querySelector('video')
+  const handleHover = (event: React.MouseEvent<HTMLDivElement>) => {
+    const video = event.currentTarget.querySelector('video');
     const videoWrapper = event.currentTarget;
 
     if (video && videoWrapper) {
@@ -46,34 +37,27 @@ class VideoGallery extends React.Component<VideoGalleryProps, VideoGalleryState>
     }
   };
 
-  handleLoaded = (event: any) => {
-    const video = event.currentTarget
+  const handleLoaded = (event: any) => {
+    const video = event.currentTarget;
 
     if (video.buffered.length === 0) return;
 
     if (video.buffered.end(0) === video.duration) {
-      video.setAttribute('data-loaded', 'true')
+      video.setAttribute('data-loaded', 'true');
     }
   };
 
-
-
-  render() {
-    const { videos } = this.state;
-    return (
-      <div className="video-gallery">
-        {
-          videos.map((video, index) => (
-            <div className="video-wrapper" key={index} onMouseMove={this.handleHover} >
-              <video data-loaded="false" preload="auto" onProgress={this.handleLoaded}>
-                <source src={video.src}></source>
-              </video>
-            </div>
-          ))
-        }
-      </div>
-    );
-  }
-}
+  return (
+    <div className="video-gallery">
+      {videos.map((video, index) => (
+        <div className="video-wrapper" key={index} onMouseMove={handleHover}>
+          <video data-loaded="false" preload="auto" onProgress={handleLoaded}>
+            <source src={video.src} />
+          </video>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default VideoGallery;
