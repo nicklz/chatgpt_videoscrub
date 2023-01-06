@@ -5,6 +5,11 @@ interface VideoGalleryProps {
   perPage: number;
 }
 
+interface Video {
+  src: string;
+  video_files: Array<{ link: string }>;
+}
+
 const VideoGallery: React.FC<VideoGalleryProps> = ({ query, perPage }) => {
   const [videos, setVideos] = React.useState<Array<{ src: string }>>([]);
 
@@ -19,7 +24,7 @@ const VideoGallery: React.FC<VideoGalleryProps> = ({ query, perPage }) => {
         }
       );
       const data = await response.json();
-      setVideos(data.videos.map((video: any) => ({ src: video.video_files[0].link })));
+      setVideos(data.videos.map((video: Video) => ({ src: video.video_files[0].link })));
     };
 
     fetchVideos();
